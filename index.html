@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        canvas {
+            border: 1px solid #d3d3d3;
+            background-color: #f1f1f1;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body onload="startGame()">
+    <script>
+        var pen;
+        function startGame() {
+            myGameArea.start();
+            pen = new component(5,"red", 0, 0);
+        }
+        
+        var myGameArea = {
+            canvas : document.createElement("canvas"),
+            start : function() {
+                this.canvas.width = 800;
+                this.canvas.height = 500;
+
+                this.context = this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.interval = setInterval(updateGameArea, 0.00001);
+
+
+                window.addEventListener('mousemove', function (e) {
+                    myGameArea.x = e.pageX;
+                    myGameArea.y = e.pageY;
+                })
+
+                window.addEventListener('keydown', function (e){
+                    myGameArea.key = e.keyCode;
+                    e.preventDefault();
+                })
+
+            },
+            clear : function(){
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        }
+
+        function component(radius, color, x, y) {
+            this.radius = radius;
+            this.x = x;
+            this.y = y; 
+            this.color = color;
+            this.update = function(){
+                
+                ctx = myGameArea.context;
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
+                ctx.fill();
+            }
+        }
+        
+        function updateGameArea() {
+            //myGameArea.clear();
+            if (myGameArea.x && myGameArea.y) {
+                pen.x = myGameArea.x;
+                pen.y = myGameArea.y; 
+            }
+            if(myGameArea.key && myGameArea.key == 66){
+                pen.color = "blue";
+            }
+            if(myGameArea.key && myGameArea.key == 71){
+                pen.color = "green";
+            }
+
+            if(myGameArea.key && myGameArea.key == 82){
+                pen.color = "red";
+            }
+            if(myGameArea.key && myGameArea.key == 89){
+                pen.color = "yellow";
+            }
+
+            if(myGameArea.key && myGameArea.key == 38){
+                pen.radius += 2;
+                myGameArea.key = false;
+            }
+
+            if(myGameArea.key && myGameArea.key == 40){
+                pen.radius -= 2;
+                if(pen.radius < 0){
+                    pen.radius = 1;
+                }
+                myGameArea.key = false;
+            }
+
+            if(myGameArea.key && myGameArea.key == 32){
+                myGameArea.clear();
+                //pen.update();
+                //startGame();
+                myGameArea.key = false;
+            }
+
+            pen.update();
+        }
+
+
+    </script>
+</body>
+</html>
